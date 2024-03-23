@@ -1,0 +1,441 @@
+@using System.Security.Claims;
+@model PublicationNamespace.Models.Publication
+
+@{
+    int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId);
+}
+
+<div class="container w-full mx-auto py-8 px-4">
+    <div class="flex flex-col md:flex-row gap-4">
+        <div class="w-full md:w-2/3">
+            <article class="p-4 rounded-md shadow-md bg-gray-200 p-2">
+                <div class="flex items-center mb-2">
+                    <img src="@Model.Author?.ImagePath" alt="@($"{Model.Author?.Email}-img")" class="w-10 h-10 rounded-full mr-4">
+                    <div class="w-full">
+                        <div class="flex justify-between">
+                            <h4 class="text-md font-bold text-gray-800">@Model.Author?.Email</h4>
+                            @if (userId == Model.Author?.Id)
+                            {
+                                <div class="flex items-center gap-2">
+                                    <a href="@Url.Action("Edit", "Publications", new { id = Model.Id })" class="edit-publication-button">
+                                        <svg
+                                            width="20"
+                                            height="20"
+                                            viewBox="0 0 20 20"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <path
+                                                d="M12.5 5.00001L15 7.50001M10.8334 16.6667H17.5M4.16671 13.3333L3.33337 16.6667L6.66671 15.8333L16.3217 6.17835C16.6342 5.8658 16.8097 5.44195 16.8097 5.00001C16.8097 4.55807 16.6342 4.13423 16.3217 3.82168L16.1784 3.67835C15.8658 3.36589 15.442 3.19037 15 3.19037C14.5581 3.19037 14.1343 3.36589 13.8217 3.67835L4.16671 13.3333Z"
+                                                stroke="black"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                        </svg>
+                                    </a>
+                                    <button id="delete-publication-button" data-publication-id="@Model.Id">
+                                        <svg
+                                            width="26"
+                                            height="26"
+                                            viewBox="0 0 26 26"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <path d="M8.24954 21.6667C7.76565 21.6667 7.3529 21.4962 7.01129 21.1553C6.6704 20.8144 6.49996 20.4017 6.49996 19.9171V6.49999H5.41663V5.41666H9.74996V4.58249H16.25V5.41666H20.5833V6.49999H19.5V19.9171C19.5 20.4154 19.3331 20.8314 18.9995 21.1651C18.6651 21.4995 18.2487 21.6667 17.7504 21.6667H8.24954ZM18.4166 6.49999H7.58329V19.9171C7.58329 20.1114 7.64576 20.271 7.77071 20.3959C7.89565 20.5209 8.05526 20.5833 8.24954 20.5833H17.7504C17.9165 20.5833 18.0692 20.514 18.2086 20.3753C18.3473 20.2359 18.4166 20.0832 18.4166 19.9171V6.49999ZM10.6253 18.4167H11.7086V8.66666H10.6253V18.4167ZM14.2913 18.4167H15.3746V8.66666H14.2913V18.4167Z" fill="black"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <img src="@Model.ImagePath" alt="@($"{Model.Title}-img")" class="w-full rounded-t-md">
+                <div class="p-4">
+                    <h2 class="text-lg font-bold text-gray-800">@Model.Title</h2>
+                    <p class="text-gray-600">@Model.Content</p>
+                </div>
+            </article>
+        </div>
+        <div class="w-full md:w-1/3">
+            <div class="bg-white rounded-md shadow-md p-4">
+                <h3 class="text-lg font-bold text-gray-800">Comentarios</h3>
+                <div id="comments-section">
+                    <ul class="list-none space-y-4">
+                        @if (Model?.Comments != null)
+                        {
+                            @foreach (var comment in Model.Comments)
+                            {
+                                @if (comment != null)
+                                {
+                                    <li id="comment-@comment.Id" class="p-4 rounded-md bg-gray-100">
+                                        <div class="flex items-center">
+                                            <img src="@comment?.Author?.ImagePath" alt="@comment?.Author?.Email profile picture" class="w-10 h-10 rounded-full mr-4">
+                                            <div class="w-full">
+                                                <div class="w-full flex justify-between">
+                                                <h4 class="text-md font-bold text-gray-800">@comment?.Author?.Email</h4>
+                                                @if (userId == comment?.Author?.Id)
+                                                {
+                                                    <div class="flex items-center gap-2">
+                                                        <button class="edit-button" data-comment-id="@comment?.Id">
+                                                            <svg
+                                                                width="20"
+                                                                height="20"
+                                                                viewBox="0 0 20 20"
+                                                                fill="none"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                            >
+                                                                <path
+                                                                    d="M12.5 5.00001L15 7.50001M10.8334 16.6667H17.5M4.16671 13.3333L3.33337 16.6667L6.66671 15.8333L16.3217 6.17835C16.6342 5.8658 16.8097 5.44195 16.8097 5.00001C16.8097 4.55807 16.6342 4.13423 16.3217 3.82168L16.1784 3.67835C15.8658 3.36589 15.442 3.19037 15 3.19037C14.5581 3.19037 14.1343 3.36589 13.8217 3.67835L4.16671 13.3333Z"
+                                                                    stroke="black"
+                                                                    stroke-linecap="round"
+                                                                    stroke-linejoin="round"
+                                                                />
+                                                            </svg>
+                                                        </button>
+                                                        <button class="delete-button" data-comment-id="@comment?.Id">
+                                                            <svg
+                                                                width="26"
+                                                                height="26"
+                                                                viewBox="0 0 26 26"
+                                                                fill="none"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                            >
+                                                                <path d="M8.24954 21.6667C7.76565 21.6667 7.3529 21.4962 7.01129 21.1553C6.6704 20.8144 6.49996 20.4017 6.49996 19.9171V6.49999H5.41663V5.41666H9.74996V4.58249H16.25V5.41666H20.5833V6.49999H19.5V19.9171C19.5 20.4154 19.3331 20.8314 18.9995 21.1651C18.6651 21.4995 18.2487 21.6667 17.7504 21.6667H8.24954ZM18.4166 6.49999H7.58329V19.9171C7.58329 20.1114 7.64576 20.271 7.77071 20.3959C7.89565 20.5209 8.05526 20.5833 8.24954 20.5833H17.7504C17.9165 20.5833 18.0692 20.514 18.2086 20.3753C18.3473 20.2359 18.4166 20.0832 18.4166 19.9171V6.49999ZM10.6253 18.4167H11.7086V8.66666H10.6253V18.4167ZM14.2913 18.4167H15.3746V8.66666H14.2913V18.4167Z" fill="black"/>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                }
+                                                </div>
+                                            <p id="comment-@comment?.Id-content" class="text-gray-600">@comment?.Content</p>
+                                            </div>
+                                        </div>
+                                        @if (userId == comment?.Author?.Id)
+                                        {
+                                            @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "edit-form-" + @comment?.Id, @class = "edit-form p-2", style = "display: none;", data_comment_id = @comment?.Id }))
+                                            {
+                                                @Html.AntiForgeryToken()
+                                                <textarea>@comment?.Content</textarea>
+                                                <button type="submit">Guardar</button>
+                                            }
+                                            <div id="delete-confirmation-@comment?.Id" class="delete-confirmation" style="display: none;">
+                                                <p>¿Estás seguro de que quieres eliminar este comentario?</p>
+                                                <button class="delete-confirmation-button bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" data-comment-id="@comment?.Id">Eliminar</button>
+                                            </div>
+                                        }
+                                    </li>
+                                }
+                            }
+                        }
+                    </ul>
+                </div>
+                @if (User != null &&  User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "comment-form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="PublicationId" value="@Model?.Id" />
+                        <div class="flex flex-col mt-4">
+                            <label for="Content" class="text-sm font-bold text-gray-800 mb-2">Deja un comentario</label>
+                            <textarea
+                                name="Content"
+                                id="Content"
+                                rows="4"
+                                class="w-full shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                required
+                            ></textarea>
+                            <button type="submit" class="mt-4 px-4 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-700">Publicar</button>
+                        </div>
+                    }
+                }
+                <input
+                    type="hidden"
+                    name="publication_id"
+                    id="publication_id"
+                    value="@Model?.Id"
+                >
+            </div>
+        </div>
+    </div>
+</div>
+<div
+    id="deleteModal"
+    class="fixed z-10 inset-0 top-[30%] overflow-y-auto"
+    aria-labelledby="modal-title"
+    role="dialog"
+    aria-modal="true"
+    style="display: none;"
+>
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div class="inline-block bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="sm:flex sm:items-start">
+                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                            Confirmación de eliminación
+                        </h3>
+                        <div class="mt-2">
+                            <p class="text-sm text-gray-500">
+                                ¿Estás seguro de que quieres eliminar este comentario?
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                @Html.AntiForgeryToken()
+                <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm" id="confirmDelete">
+                    Eliminar
+                </button>
+                <button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div
+    id="deletePublicationModal"
+    class="fixed z-10 inset-0 overflow-y-auto"
+    aria-labelledby="modal-title"
+    role="dialog"
+    aria-modal="true"
+    style="display: none;"
+>
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+    <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div class="inline-block  bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="sm:flex sm:items-start">
+                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                            Confirmación de eliminación
+                        </h3>
+                        <div class="mt-2">
+                            <p class="text-sm text-gray-500">
+                                ¿Estás seguro de que quieres eliminar esta publication?
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-base" id="confirmPublicationDelete">
+                    Eliminar
+                </button>
+                <button id="cancel-button-publication" type="button" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-base">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        document.getElementById('cancel-button-publication')?.addEventListener('click', function() {
+            const deletePublicationModal = document.getElementById('deletePublicationModal');
+            deletePublicationModal.style.display = 'none';
+        });
+        document.getElementById('delete-publication-button')?.addEventListener('click', function(event) {
+            const publicationID = this.dataset.publicationId;
+
+            // Show delete confirmation
+            const deletePublicationModal = document.getElementById('deletePublicationModal');
+            deletePublicationModal.style.display = 'block';
+
+            // Set the event listener for the confirm delete button
+            document.getElementById('confirmPublicationDelete')?.addEventListener('click', function() {
+                // Send delete request
+                fetch(`/publications/delete/${publicationID}/`, {
+                    method: 'POST',
+                    headers: {
+                        // Include CSRF token in the request header
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error deleting publication: ${response.statusText}`);
+                    }
+
+                    // Redirect to home
+                    window.location.href = "/";
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+                // Hide the modal
+                deletePublicationModal.style.display = 'none';
+            });
+        });
+
+        document.getElementById('comment-form')?.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const commentContent = document.getElementById('Content').value;
+            const publicationId = document.getElementsByName('PublicationId')[0].value;
+
+            let formData = new FormData();
+            formData.append('Content', commentContent);
+            formData.append('PublicationId', publicationId);
+            formData.append('__RequestVerificationToken', document.getElementsByName('__RequestVerificationToken')[0].value);
+
+            fetch(`/Comment/Create/`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error creating comment: ${response.statusText}`); // Handle errors appropriately
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Update comments section
+                const commentsSection = document.getElementById('comments-section');
+                commentsSection.innerHTML = data.commentsHtml; // Replace with your HTML update logic
+                document.getElementById('Content').value = ''; // Clear comment input
+                assignListeners();
+            })
+            .catch(error => {
+                console.error(error); // Display error message to the user (optional)
+            });
+        });
+
+
+    function assignListeners() {
+        document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(button => {
+            button.addEventListener('click', function() {
+                const deleteModal = document.getElementById('deleteModal');
+                deleteModal.style.display = 'none';
+            });
+        });
+        // Add event listeners to edit and delete buttons
+        document.querySelectorAll('.edit-button').forEach(button => {
+            button.addEventListener('click', function(event) {
+                const commentId = event.currentTarget.dataset.commentId;
+                const commentContentElement = document.querySelector(`#comment-${commentId}-content`);
+                const commentContent = commentContentElement.textContent;
+
+                // Hide comment content
+                commentContentElement.style.display = 'none';
+
+                // Show edit form
+                const editForm = document.querySelector(`#edit-form-${commentId}`);
+                editForm.querySelector('textarea').value = commentContent;
+                editForm.style.display = 'block';
+            });
+        });
+
+        document.querySelectorAll('.delete-button').forEach(button => {
+            button.addEventListener('click', function(event) {
+                const commentId = event.currentTarget.dataset.commentId;
+
+                // Show delete confirmation
+                const deleteModal = document.getElementById(`delete-confirmation-${commentId}`);
+                deleteModal.style.display = 'block';
+
+                // Set the event listener for the confirm delete button
+                document.getElementById('confirmDelete')?.addEventListener('click', function() {
+                    // Send delete request
+                    fetch(`/comments/delete/${commentId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        },
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error deleting comment: ${response.statusText}`);
+                        }
+
+                        // Remove comment from DOM
+                        document.querySelector(`#comment-${commentId}`).remove();
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+
+                    // Hide the modal
+                    deleteModal.style.display = 'none';
+                });
+            });
+        });
+
+        // Add event listeners to edit form submit buttons
+        document.querySelectorAll('.edit-form').forEach(form => {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const commentId = event.target.dataset.commentId;
+                const commentContent = event.target.querySelector('textarea').value;
+
+                const data = { Content: commentContent };
+
+
+                // Send edit request
+                fetch(`/Comment/Edit/${commentId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Include CSRF token in the request header
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify(data),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error editing comment: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Update comment content
+                    const commentContentElement = document.querySelector(`#comment-${commentId}-content`);
+                    commentContentElement.textContent = data.content;
+
+                    // Show comment content
+                    commentContentElement.style.display = '';
+
+                    // Hide edit form
+                    event.target.style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('error', error);
+                });
+            });
+        });
+        
+        // Add event listeners to delete confirmation buttons
+        document.querySelectorAll('.delete-confirmation-button').forEach(button => {
+            button.addEventListener('click', function(event) {
+                const commentId = event.target.dataset.commentId;
+
+                // Send delete request
+                fetch(`/Comment/Delete/${commentId}/`, {
+                    method: 'POST',
+                    headers: {
+                        // Include CSRF token in the request header
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error deleting comment: ${response.statusText}`);
+                    }
+
+                    // Remove comment from DOM
+                    document.querySelector(`#comment-${commentId}`).remove();
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            });
+        });
+    }
+    assignListeners();
+    </script>
+}

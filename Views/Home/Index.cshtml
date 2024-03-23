@@ -1,0 +1,84 @@
+﻿@using Tesis;
+@model PaginatedList<PublicationNamespace.Models.Publication>
+
+<div>
+    <nav class="p-2">
+        <a class="flex items-center gap-2" asp-controller="Publications" asp-action="Create">
+            Agregar publicación
+        </a>
+    </nav>
+    <main class="container mx-auto px-4 py-8 w-full flex justify-center items-center">
+        <section class="flex flex-col md:w-1/2 gap-4">
+        @foreach (var publication in Model)
+        if (publication != null && publication.Author != null){
+            {
+                <article class="p-4 rounded-md shadow-md bg-white hover:shadow-lg">
+                    <a asp-controller="Publications" asp-action="Details" asp-route-id="@publication.Id">
+                        <div class="flex items-center mb-2">
+                            <img src="@publication.Author?.ImagePath" alt="@($"{publication.Author?.Name}-img")" class="w-12 h-12 rounded-full object-cover">
+                            <div class="ml-4">
+                                <h3 class="text-gray-800 font-bold">@publication.Author?.Name @publication.Author?.Lastname</h3>
+                                <p class="text-gray-600">@publication.CreationDate.ToString("g")</p>
+                            </div>
+                        </div>
+                        <img src="@publication.ImagePath" alt="@($"{publication.Title}-img")" class="w-full rounded-t-md">
+                        <div class="p-4">
+                            <h2 class="text-lg font-bold text-gray-800">@publication.Title</h2>
+                            <p class="text-gray-600">@publication.Content</p>
+                        </div>
+                    </a>
+                </article>
+        }
+                }
+        </section>
+    </main>
+    <div class="container mx-auto px-4 py-4 flex justify-center">
+        <ul class="pagination flex w-full justify-end list-none">
+            @{
+                var prevDisabled = !Model.HasPreviousPage;
+                var nextDisabled = !Model.HasNextPage;
+            }
+            <li class="mr-2">
+                <a asp-action="Index"
+                     asp-route-sortOrder="@ViewData["CurrentSort"]"
+                     asp-route-pageNumber="@(Model.PageIndex - 1)"
+                     asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                     class="px-3 py-2 rounded-md bg-gray-200 hover:bg-gray-300 text-gray-600 @(prevDisabled ? "disabled" : "")">
+                    Página anterior
+                </a>
+            </li>
+            @for (var i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="mr-2">
+                    <a asp-action="Index"
+                         asp-route-sortOrder="@ViewData["CurrentSort"]"
+                         asp-route-pageNumber="@i"
+                         asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                         class="px-3 py-2 rounded-md bg-gray-200 hover:bg-gray-300 text-gray-600 @(Model.PageIndex == i ? "bg-blue-500 text-white" : "")">
+                        @i
+                    </a>
+                </li>
+            }
+            <li>
+                <a asp-action="Index"
+                     asp-route-sortOrder="@ViewData["CurrentSort"]"
+                     asp-route-pageNumber="@(Model.PageIndex + 1)"
+                     asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                     class="px-3 py-2 rounded-md bg-gray-200 hover:bg-gray-300 text-gray-600 @(nextDisabled ? "disabled" : "")">
+                    Página siguiente
+                </a>
+            </li>
+        </ul>
+
+        <script>
+            window.onload = function() {
+                var links = document.querySelectorAll('a.disabled');
+                links.forEach(function(link) {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                    });
+                });
+            };
+        </script>
+    </div>
+</div>

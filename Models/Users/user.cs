@@ -32,7 +32,7 @@ namespace UserNamespace.Models
 
         public bool IsSuperuser { get; set; } = false;
 
-        public bool IsBlocked { get; set; } = true;
+        public bool IsBlocked { get; set; } = false;
 
         public string? GetFullName()
         {

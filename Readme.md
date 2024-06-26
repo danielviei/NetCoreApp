@@ -16,11 +16,13 @@ Esta es una aplicación base básica que consiste en que los usuarios puedan reg
 ## ⚙️ Configuración
 
 1. Para configurar la cadena de conexión a la base de datos en el archivo `appsettings.json`. Es necesario crear un archivo .env con los siguientes valores:
+    
     a. Para la base de datos es necesario:
         - `DB_HOST`: El host donde se encuentra tu base de datos.
         - `DB_NAME`: El nombre de la base de datos a la que te quieres conectar.
         - `DB_USER`: La contraseña para el usuario especificado para la base de datos.
         - `DB_PASS`: El host donde se encuentra tu base de datos.
+
     b. Para poder enviar los correos para la recuperacion de contraseña es necesario:
         - `EMAIL_USERNAME`: El correo gmail con el cual deseas enviar los correos.
         - `EMAIL_PASSWORD`: La contraseña de aplicación utilizada para autenticarse con la API de Gmail.

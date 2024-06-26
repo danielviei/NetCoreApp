@@ -2,7 +2,7 @@
 
 Esta es una aplicación base básica que consiste en que los usuarios puedan registrarse y crear publicaciones y comentarlas, con la finalidad de poder comparar este framework con otros en diferentes criterios.
 
-## Requisitos
+## 📋 Requisitos
 
 - .NET Core 8.0
 - PostgreSQL (o cualquier otro sistema de gestión de bases de datos que estés utilizando)
@@ -26,7 +26,7 @@ Esta es una aplicación base básica que consiste en que los usuarios puedan reg
         - `EMAIL_PASSWORD`: La contraseña de aplicación utilizada para autenticarse con la API de Gmail.
 
 ⚠️ Asegúrate de que el usuario y la contraseña proporcionados para la base de datos tienen los permisos necesarios para acceder a la base de datos especificada.
-## Ejecución de las migraciones de la Base de Datos
+## 🗄️Ejecución de las migraciones de la Base de Datos
 
 1. Para crear una nueva migración, ejecuta:
     ```

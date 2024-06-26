@@ -29,26 +29,26 @@ Esta es una aplicación base básica que consiste en que los usuarios puedan reg
 ## 🗄️Ejecución de las migraciones de la Base de Datos
 
 1. Para crear una nueva migración, ejecuta:
-    ```
+    ```bash
     dotnet ef migrations add NombreDeLaMigracion
     ```
 2. Para aplicar las migraciones a la base de datos, ejecuta:
-    ```
+    ```bash
     dotnet ef database update
     ```
 
 ## 🎮Ejecución del proyecto
 1. Para compilar el proyecto, utiliza el comando:
-```
+```bash
 dotnet publish -c Release 
 ```
 2. Para ejecutar el proyecto, utiliza el comando:
-```
+```bash
 dotnet ruta_al_archivo_dll_generado_con_el_comando_anterior
 ```
 
 ##  🔨 Desarrollo
 Para ejecutar el proyecto en un entorno de desarrollo, utiliza el comando:
-```
+```bash
 dotnet run
 ```
